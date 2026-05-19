@@ -49,15 +49,12 @@
 <div id="map"></div>
 
 <script>
-  // Создание карты
   const map = L.map('map').setView([44.95, 34.95], 8);
 
-  // Базовый слой
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  // Точки heatmap
   const heatPoints = [
 
     [41.0054605, 39.7301463, 1.0],
@@ -108,7 +105,6 @@
     [41.0054605, 39.7301463, 1.0]
   ];
 
-  // Heatmap layer
   L.heatLayer(heatPoints, {
     radius: 25,
     blur: 20,
