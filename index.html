@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kırım Efsanelerinde Mekânsal Unsurların Adlandırılmış Varlık Tanıma için Etiketlenmesi ve Veri Seti Oluşturulması</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+
+    .title {
+      position: absolute;
+      top: 10px;
+      left: 50px;
+      z-index: 1000;
+      background: rgba(255,255,255,0.9);
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="title">
+  Kırım Efsanelerinde Mekânsal Unsurların Adlandırılmış Varlık Tanıma için Etiketlenmesi ve Veri Seti Oluşturulması
+</div>
+
+<div id="map"></div>
+
+<script>
+  // Создание карты
+  const map = L.map('map').setView([44.95, 34.95], 8);
+
+  // Базовый слой
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Точки heatmap
+  const heatPoints = [
+
+    [41.0054605, 39.7301463, 1.0],
+    [41.0707456, 29.0509414, 1.0],
+    [41.7393428, 32.3802069, 1.0],
+    [44.4865736, 34.0787504, 1.0],
+    [44.6670971, 33.8413032, 1.0],
+    [44.677112, 34.4095393, 1.0],
+    [44.6843311, 33.8746582, 1.0],
+    [44.694769, 34.3943523, 1.0],
+    [44.7234724, 34.3763735, 1.0],
+    [44.7451986, 33.848728, 1.0],
+    [44.7504305, 33.7618758, 1.0],
+    [44.7755079, 33.5437538, 1.0],
+    [44.8233686, 34.8814087, 1.0],
+    [44.8234715, 34.6766035, 1.0],
+    [44.82417, 34.8068423, 1.0],
+    [44.8351924, 34.9946821, 1.0],
+    [44.8362861, 34.9266555, 1.0],
+    [44.8488369, 34.971099, 1.0],
+    [44.86816, 35.06081, 1.0],
+    [44.8764433, 35.1010449, 1.0],
+    [44.9003501, 34.9490932, 1.0],
+    [44.9057747, 35.144588, 1.0],
+    [44.9067584, 35.1490893, 1.0],
+    [44.9070551, 35.149659, 1.0],
+    [44.9143409, 35.1882694, 1.0],
+    [44.9322282, 35.214729, 1.0],
+    [44.9382816, 35.1568474, 1.0],
+    [44.9463193, 35.0705919, 1.0],
+    [44.9521459, 34.1024858, 1.0],
+    [44.9543619, 35.3905778, 1.0],
+    [44.9593622, 35.2422149, 1.0],
+    [44.9616987, 35.2516671, 1.0],
+    [44.9643302, 35.1797204, 1.0],
+    [44.9735775, 34.8361581, 1.0],
+    [45.0002036, 35.2878055, 1.0],
+    [45.000839, 35.0626334, 1.0],
+    [45.0015324, 35.2204939, 1.0],
+    [45.013363, 35.425201, 1.0],
+    [45.0293926, 35.0881549, 1.0],
+    [45.033669, 35.3753628, 1.0],
+    [45.033865, 35.0985777, 1.0],
+    [45.0375126, 35.0239962, 1.0],
+    [45.2835044, 34.2008188, 1.0],
+    [45.3503175, 36.4693847, 1.0],
+    [45.7119746, 34.3927394, 1.0],
+    [41.0054605, 39.7301463, 1.0]
+  ];
+
+  // Heatmap layer
+  L.heatLayer(heatPoints, {
+    radius: 25,
+    blur: 20,
+    maxZoom: 10,
+    gradient: {
+      0.2: 'blue',
+      0.4: 'lime',
+      0.6: 'yellow',
+      0.8: 'orange',
+      1.0: 'red'
+    }
+  }).addTo(map);
+
+</script>
+
+</body>
+</html>
