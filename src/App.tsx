@@ -41,7 +41,6 @@ export default function App() {
   const [selectedItem, setSelectedItem] = useState<LegendItem | null>(PARSED_DATASET[0]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   
-  // Highlighting states for previewer
   const [highlightToggles, setHighlightToggles] = useState({
     REG: true,
     GEO: true,
@@ -50,15 +49,12 @@ export default function App() {
     SAC: true
   });
 
-  // Playground NER emulator state
   const [playgroundText, setPlaygroundText] = useState(
     "В Отузы прибыл начальник. Он поехал миmo Карадага к мечети Султана-Салэ."
   );
   
-  // Network Diagram interactions
   const [selectedNetworkNode, setSelectedNetworkNode] = useState<string | null>(null);
 
-  // Scroll to detail action
   useEffect(() => {
     if (selectedItem) {
       const element = document.getElementById('sentence-detail-panel');
@@ -68,7 +64,6 @@ export default function App() {
     }
   }, [selectedItem?.id]);
 
-  // Extract unique narrative cycles
   const narrativeCycles = useMemo(() => {
     const cycles = new Set<string>();
     PARSED_DATASET.forEach(item => {
@@ -79,7 +74,6 @@ export default function App() {
     return ['Tümü', ...Array.from(cycles)];
   }, []);
 
-  // Filter dataset
   const filteredDataset = useMemo(() => {
     return PARSED_DATASET.filter(item => {
       const matchesSearch = 
@@ -93,14 +87,12 @@ export default function App() {
     });
   }, [searchQuery, selectedCycle, selectedEntityType, selectedNetworkNode]);
 
-  // Ensure selected item is updated when filters change if it's no longer inside filtered list
   useEffect(() => {
     if (filteredDataset.length > 0 && (!selectedItem || !filteredDataset.some(x => x.id === selectedItem.id))) {
       setSelectedItem(filteredDataset[0]);
     }
   }, [filteredDataset, selectedItem]);
 
-  // Compute corpus stats
   const stats = useMemo(() => {
     let totalWords = 0;
     const typeCounts: Record<string, number> = { REG: 8, GEO: 67, LOC: 90, FAC: 11, SAC: 14 };
@@ -108,7 +100,6 @@ export default function App() {
     const entityTokens: Record<string, { count: number; label: string }> = {};
 
     PARSED_DATASET.forEach(item => {
-      // Simple word tokenization clean split
       const words = item.text.split(/\s+/).filter(Boolean);
       totalWords += words.length;
 
@@ -139,7 +130,6 @@ export default function App() {
     };
   }, []);
 
-  // Compute Co-occurrence matrix
   const cooccurrenceData = useMemo(() => {
     const keys = ['REG', 'GEO', 'LOC', 'FAC', 'SAC'] as const;
     const matrix: Record<string, Record<string, number>> = {};
@@ -165,15 +155,12 @@ export default function App() {
     return matrix;
   }, []);
 
-  // IOB / BIO format generator for the selected item
   const selectedItemIOB = useMemo(() => {
     if (!selectedItem) return [];
     
-    // Simple word segmenter
     const text = selectedItem.text;
     const tokens: { word: string; tag: string }[] = [];
     
-    // Find words with locations
     const wordRegex = /[^,\s.!?;:/*\-\"“()]+|[.,!?;:\-/*\"“()]/g;
     let match;
     
@@ -182,7 +169,6 @@ export default function App() {
       const start = match.index;
       const end = start + word.length;
       
-      // Determine if word overlaps with any entity
       let currentTag = 'O';
       for (const ent of selectedItem.entities) {
         if (start >= ent.start && end <= ent.end) {
@@ -200,11 +186,9 @@ export default function App() {
     return tokens;
   }, [selectedItem]);
 
-  // Text Entity Highlighter Renderer
   const renderHighlightedText = (sentenceText: string, entities: Entity[]) => {
     if (entities.length === 0) return sentenceText;
 
-    // Sort entities from left to right
     const sortedEntities = [...entities].sort((a, b) => a.start - b.start);
     const result: React.ReactNode[] = [];
     let lastIndex = 0;
@@ -214,12 +198,10 @@ export default function App() {
       const isHighlighted = highlightToggles[label];
       const typeConfig = ENTITY_TYPES[label];
 
-      // Add leading unhighlighted text
       if (ent.start > lastIndex) {
         result.push(<span key={`text-before-${idx}`}>{sentenceText.slice(lastIndex, ent.start)}</span>);
       }
 
-      // Add actual entity
       const entityTextSegment = sentenceText.slice(ent.start, ent.end);
       if (isHighlighted) {
         result.push(
@@ -244,7 +226,6 @@ export default function App() {
       lastIndex = ent.end;
     });
 
-    // Add remaining tail text
     if (lastIndex < sentenceText.length) {
       result.push(<span key="text-end">{sentenceText.slice(lastIndex)}</span>);
     }
@@ -252,12 +233,10 @@ export default function App() {
     return result;
   };
 
-  // Run dynamic playground prediction matching
   const simulatedPlaygroundEntities = useMemo(() => {
     const text = playgroundText;
     const matches: { text: string; label: string; start: number; end: number }[] = [];
     
-    // Loop through all parsed entities to search for exact string matches in playground text
     const seenPhrases = new Set<string>();
     
     PARSED_DATASET.forEach(item => {
@@ -267,7 +246,6 @@ export default function App() {
           seenPhrases.add(word.toLowerCase());
           
           try {
-            // Find occurrences
             let pos = text.toLowerCase().indexOf(word.toLowerCase());
             while (pos !== -1) {
               matches.push({
@@ -279,13 +257,11 @@ export default function App() {
               pos = text.toLowerCase().indexOf(word.toLowerCase(), pos + 1);
             }
           } catch (e) {
-            // ignore malformed entities
           }
         }
       });
     });
 
-    // Sort and remove overlaps
     const sorted = matches.sort((a, b) => a.start - b.start);
     const finalMatches: { text: string; label: 'REG' | 'GEO' | 'LOC' | 'FAC' | 'SAC'; start: number; end: number }[] = [];
     let lastEnd = 0;
@@ -305,7 +281,6 @@ export default function App() {
     return finalMatches;
   }, [playgroundText]);
 
-  // Export File Formats download trigger
   const triggerDownload = (format: 'jsonl' | 'csv' | 'iob') => {
     let content = '';
     let filename = '';
@@ -341,7 +316,6 @@ export default function App() {
       filename = 'crimean_legends_ner_dataset.csv';
       mimeType = 'text/csv';
     } else {
-      // General IOB block for entire dataset
       content = PARSED_DATASET.map(item => {
         let text = item.text;
         const tokens: string[] = [];
@@ -406,7 +380,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="font-serif text-lg md:text-xl font-semibold text-slate-950">
-                Kırım Efsanelerinde Mekânsal Unsurların NER Etiketlemesi ve Veri Seti
+                Kırım Efsanelerinde Mekânsal Unsurların Adlandırılmış Varlık Tanıma için Etiketlenmesi ve Veri Seti Oluşturulması
               </h1>
             </div>
           </div>
@@ -441,7 +415,7 @@ export default function App() {
       <nav className="bg-stone-100 border-b border-stone-200 px-4 md:px-8">
         <div className="max-w-7xl mx-auto flex items-center overflow-x-auto gap-1 py-2">
           {[
-            { id: 'paper', label: 'Bildiri', icon: BookOpen },
+            { id: 'paper', label: 'Bildiri (Özet)', icon: BookOpen },
             { id: 'explorer', label: 'Derlem', icon: Database },
             { id: 'charts', label: 'Bulgular', icon: Activity },
             { id: 'export', label: 'NER ve Dışa Aktarma', icon: Code },
@@ -566,7 +540,7 @@ export default function App() {
                   Veri ve Bilimsel Çıktılar
                 </h3>
                 <p className="text-xs text-stone-300 mt-2 leading-relaxed">
-                  Bu web sitesi, adı geçen bildirinin veri çıktılarını interaktif olarak doğrular.
+                  Bu çalışma, adı geçen bildirinin etiketleme çıktılarını interaktif olarak doğrulamak için oluşturulmuştur.
                 </p>
 
                 <div className="space-y-4 mt-6">
@@ -575,7 +549,7 @@ export default function App() {
                     <div>
                       <h4 className="text-xs font-semibold text-white">Söz Varlığı</h4>
                       <p className="text-[11px] text-stone-400 mt-1 leading-relaxed">
-                        Derlemde 24 tane efsane metni dijital ortama aktarılmıştır.
+                        Derlemde 24 adet Kırım halk efsanesi dijital ortama aktarılmıştır.
                       </p>
                     </div>
                   </div>
@@ -585,7 +559,7 @@ export default function App() {
                     <div>
                       <h4 className="text-xs font-semibold text-white">Varlık Sıklığı</h4>
                       <p className="text-[11px] text-stone-400 mt-1 leading-relaxed">
-                        Metinlerdeki kutsal ve doğal mekânsal unsurların ilişkilerini analiz eden özelleştirilmiş yapı hazırlanmıştır.
+                        Metinlerde kutsal ve doğal mekânsal unsurların arasındaki ilişkileri incelemek için özel yapılar oluşturulmuştur.
                       </p>
                     </div>
                   </div>
@@ -595,7 +569,7 @@ export default function App() {
                     <div>
                       <h4 className="text-xs font-semibold text-white">Topolojik Söylence Ağları</h4>
                       <p className="text-[11px] text-stone-400 mt-1 leading-relaxed">
-                        Kırım’daki köy ve dağ adların (Otuz, Koz, Karadağ) coğrafi ilişkileri çıkarılarak sayısallaştırılmıştır.
+                        Kırım’daki köy ve dağ adlarının (Otuz, Koz, Karadağ) coğrafi ilişkileri halk efsanelerinden örneklendirilerek sayısallaştırılmıştır.
                       </p>
                     </div>
                   </div>
@@ -640,18 +614,18 @@ export default function App() {
     type = {Bildiri},
     pages = {-},
     language = {Turkish},
-    abstract = {-}
+    abstract = {Annotation and Dataset Construction for Named Entity Recognition of Spatial Elements in Crimean Legends}
 }`}
                   </pre>
                 </div>
                 
                 <h4 className="font-serif text-sm font-semibold text-slate-900 mt-6 border-b border-stone-100 pb-2 mb-3">
-                  GitHub & Sürüm Bilgisi
+                  GitHub
                 </h4>
                 <div className="space-y-2 text-xs text-slate-600">
                   <div className="flex items-center justify-between">
                     <span>Sürüm</span>
-                    <span className="font-mono bg-stone-100 text-slate-700 px-1.5 py-0.5 rounded">v1.0</span>
+                    <span className="font-mono bg-stone-100 text-slate-700 px-1.5 py-0.5 rounded">v2.0</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Veri Formatı</span>
@@ -1093,7 +1067,6 @@ export default function App() {
                           </div>
                           {['REG', 'GEO', 'LOC', 'FAC', 'SAC'].map((colKey) => {
                             const val = cooccurrenceData[rowKey]?.[colKey] || 0;
-                            // Set dynamic background intensity based on count
                             let intensityBg = 'bg-stone-50 text-slate-300';
                             let borderCol = 'border-stone-105';
                             if (val > 0) {
@@ -1122,7 +1095,7 @@ export default function App() {
                   <div className="flex items-center justify-center gap-4 mt-5 text-[10px] text-slate-500">
                     <div className="flex items-center gap-1">
                       <span className="w-2.5 h-2.5 bg-stone-50 border border-stone-200 rounded block" />
-                      <span>İlişki Yok</span>
+                      <span>Sonuç bulunamadı</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="w-2.5 h-2.5 bg-rose-50 border border-rose-100 rounded block" />
@@ -1134,7 +1107,7 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-1">
                       <span className="w-2.5 h-2.5 bg-rose-500 border border-rose-600 rounded block" />
-                      <span>Maksimum</span>
+                      <span>Yüksek</span>
                     </div>
                   </div>
                 </div>
@@ -1249,7 +1222,7 @@ export default function App() {
               <div>
                 <h3 className="font-serif text-lg font-semibold text-slate-950 flex items-center gap-1.5">
                   <Database className="text-orange-600" size={18} />
-                  <span>Akademik Veri Dışa Aktarma</span>
+                  <span>Dışa Aktarma (Akademik)</span>
                 </h3>
                 <p className="text-xs text-slate-500 leading-normal mt-1">
                   Veri kümelerinizi istediğiniz NLP eğitim formatında tek tıkla dışa aktarın ve araştırma ortamınıza, analiz araçlarınıza veya ortak çalışma depolarınıza kolayca aktarın.
@@ -1323,17 +1296,17 @@ export default function App() {
       <footer className="border-t border-stone-200 bg-stone-50 py-8 px-4 mt-12 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-left">
-            <span className="font-serif font-semibold text-slate-800 text-sm block">Kırım Efsaneleri Veri Bilimi Platformu</span>
-            <span className="block mt-0.5 text-stone-400">© 2026 Kırım Efsaneleri Veri Bilimi Platformu. Tüm Hakları Saklıdır.</span>
+            <span className="font-serif font-semibold text-slate-800 text-sm block">III. Uluslararası Bilim, Yazı ve Edebiyat Dili Olarak Türkçe Sempozyumu, 18-19-20 Mayıs 2026.</span>
+            <span className="block mt-0.5 text-stone-400">© 2026 Kırım Efsanelerinde Mekânsal Unsurların Adlandırılmış Varlık Tanıma için Etiketlenmesi ve Veri Seti Oluşturulması. Tüm Hakları Saklıdır.</span>
           </div>
 
           <div className="flex items-center gap-4 text-orange-600 font-medium">
-            <a href="#github-repo" onClick={(e) => { e.preventDefault(); alert("Veri seti deposu başarıyla simüle edildi! GitHub Reposunuza yüklenmeye hazırdır."); }} className="hover:underline flex items-center gap-1">
+            <a href="#github-repo" onClick={(e) => { e.preventDefault(); alert("GitHub’a yüklemeye hazır!"); }} className="hover:underline flex items-center gap-1">
               <span>GitHub Repository</span>
               <ExternalLink size={12} />
             </a>
             <span>•</span>
-            <a href="#academic-license" onClick={(e) => { e.preventDefault(); alert("Bu çalışma CC-BY 4.0 Uluslararası Atıf Lisansına tabidir."); }} className="hover:underline">
+            <a href="#academic-license" onClick={(e) => { e.preventDefault(); alert("Bu çalışma, Creative Commons Attribution 4.0 International (CC BY 4.0) lisansı altında lisanslanmıştır."); }} className="hover:underline">
               Lisans Bilgisi
             </a>
           </div>
