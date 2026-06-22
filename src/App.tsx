@@ -1297,7 +1297,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-left">
             <span className="font-serif font-semibold text-slate-800 text-sm block">III. Uluslararası Bilim, Yazı ve Edebiyat Dili Olarak Türkçe Sempozyumu, 18-19-20 Mayıs 2026.</span>
-            <span className="block mt-0.5 text-stone-400">© 2026 Kırım Efsanelerinde Mekânsal Unsurların Adlandırılmış Varlık Tanıma için Etiketlenmesi ve Veri Seti Oluşturulması. Tüm Hakları Saklıdır.</span>
+            <span className="block mt-0.5 text-stone-400">© 2026 Bu platformdaki tüm içerikler telif hakkı ile korunmaktadır.</span>
           </div>
 
           <div className="flex items-center gap-4 text-orange-600 font-medium">
