@@ -1226,7 +1226,7 @@ export default function App() {
                   <Database className="text-orange-600" size={18} />
                   <span>Dışa Aktarma (Akademik)</span>
                 </h3>
-                <p className="text-xs text-slate-500 leading-normal mt-1">
+                <p className="text-xs text-slate-500 leading-normal mt-1 text-justify">
                   Veri kümelerinizi istediğiniz NLP eğitim formatında tek tıkla dışa aktarın ve araştırma ortamınıza, analiz araçlarınıza veya ortak çalışma depolarınıza kolayca aktarın.
                 </p>
               </div>
