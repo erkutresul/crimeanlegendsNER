@@ -380,9 +380,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="font-serif text-lg md:text-xl font-semibold text-slate-950">
-                Kırım Efsanelerinde Mekânsal Unsurların
-                Adlandırılmış Varlık Tanıma için
-                Etiketlenmesi ve Veri Seti Oluşturulması
+                Kırım Efsanelerinde Mekânsal Unsurların AVT için Etiketlenmesi ve Veri Seti Oluşturulması
               </h1>
             </div>
           </div>
