@@ -475,7 +475,7 @@ export default function App() {
                   <FileText className="text-orange-600" size={18} />
                   <span>Öz</span>
                 </h3>
-                <p className="text-slate-700 text-sm md:text-base leading-relaxed font-serif">
+                <p className="text-slate-700 text-sm md:text-base leading-relaxed font-serif text-justify">
                   {PAPER_METADATA.abstract}
                 </p>
                 <div className="flex flex-wrap items-center gap-1.5 mt-4 pt-4 border-t border-stone-100">
