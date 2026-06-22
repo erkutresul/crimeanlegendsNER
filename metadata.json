@@ -1,0 +1,6 @@
+{
+  "name": "Research Paper Data Visualizer",
+  "description": "An interactive data visualization companion platform for academic and scientific research papers, designed for GitHub Pages hosting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
