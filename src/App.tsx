@@ -751,7 +751,7 @@ export default function App() {
                               ? 'bg-rose-50/60 border-l-4 border-rose-600 pl-2' 
                               : 'hover:bg-stone-50 pl-3'
                           }`}
-                          id={`item-btn-${item.id}`}
+                          id={`varlık-btn-${item.id}`}
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-mono font-bold text-rose-700 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-100 uppercase">
