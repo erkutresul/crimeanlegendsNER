@@ -417,7 +417,7 @@ export default function App() {
       <nav className="bg-stone-100 border-b border-stone-200 px-4 md:px-8">
         <div className="max-w-7xl mx-auto flex items-center overflow-x-auto gap-1 py-2">
           {[
-            { id: 'paper', label: 'Bildiri (Özet)', icon: BookOpen },
+            { id: 'paper', label: 'Bildiri (Öz)', icon: BookOpen },
             { id: 'explorer', label: 'Derlem', icon: Database },
             { id: 'charts', label: 'Bulgular', icon: Activity },
             { id: 'export', label: 'NER ve Dışa Aktarma', icon: Code },
